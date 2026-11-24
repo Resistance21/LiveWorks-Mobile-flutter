@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
@@ -32,5 +33,44 @@ class ApiService {
     }
 
     throw Exception('Server error (${response.statusCode})');
+  }
+
+  Future<void> _saveToken(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', value);
+  }
+
+  Future<bool> restoreSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('token');
+    if (saved == null) return false;
+
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/user'),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $saved',
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        token = saved;
+        return true;
+      }
+    } catch (_) {
+      // Network problem: treat as not logged in.
+    }
+
+    await prefs.remove('token');
+    return false;
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    token = null;
   }
 }
