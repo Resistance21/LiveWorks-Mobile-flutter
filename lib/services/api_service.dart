@@ -6,6 +6,9 @@ import 'package:liveworks_mobile_flutter/models/project.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:liveworks_mobile_flutter/models/unit.dart';
 import 'package:liveworks_mobile_flutter/models/assessment.dart';
+import 'package:liveworks_mobile_flutter/models/project_detail.dart';
+
+import 'dart:typed_data';
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
@@ -180,6 +183,40 @@ class ApiService {
       throw Exception(body['message'] ?? 'Upload rejected');
     }
 
+    throw Exception('Server error (${response.statusCode})');
+  }
+
+  Future<ProjectDetail> fetchProject(int id) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/projects/$id'), headers: _authHeaders)
+        .timeout(const Duration(seconds: 10));
+
+    if (response.statusCode == 200) {
+      return ProjectDetail.fromJson(
+        jsonDecode(response.body) as Map<String, dynamic>,
+      );
+    }
+    if (response.statusCode == 404) {
+      throw Exception('Project not found');
+    }
+    throw Exception('Server error (${response.statusCode})');
+  }
+
+  Future<Uint8List> downloadArchive(int archiveId) =>
+      _download('archives/$archiveId/download');
+
+  Future<Uint8List> downloadDocument(int documentId) =>
+      _download('documents/$documentId/download');
+
+  Future<Uint8List> _download(String path) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/$path'), headers: _authHeaders)
+        .timeout(const Duration(seconds: 60));
+
+    if (response.statusCode == 200) return response.bodyBytes;
+    if (response.statusCode == 404) {
+      throw Exception('File not found on the server');
+    }
     throw Exception('Server error (${response.statusCode})');
   }
 }
