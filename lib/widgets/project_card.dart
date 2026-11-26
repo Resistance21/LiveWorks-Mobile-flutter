@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:liveworks_mobile_flutter/models/project.dart';
-import 'package:liveworks_mobile_flutter/theme/app_theme.dart';
 
 class ProjectCard extends StatelessWidget {
   const ProjectCard({super.key, required this.project, this.onTap});
@@ -16,6 +15,7 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final d = project.createdAt.toLocal();
     final description = _shortDescription;
 
@@ -23,7 +23,7 @@ class ProjectCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: scheme.outlineVariant),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -41,7 +41,6 @@ class ProjectCard extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: AppColors.text,
                       ),
                     ),
                     if (description != null) ...[
@@ -53,7 +52,6 @@ class ProjectCard extends StatelessWidget {
                           description,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: AppColors.text),
                         ),
                       ),
                     ],
@@ -61,7 +59,7 @@ class ProjectCard extends StatelessWidget {
                     Text(
                       '${project.unitCode} · ${project.year} · '
                       'uploaded ${d.day}/${d.month}/${d.year}',
-                      style: const TextStyle(color: AppColors.hint),
+                      style: TextStyle(color: scheme.onSurfaceVariant),
                     ),
                   ],
                 ),

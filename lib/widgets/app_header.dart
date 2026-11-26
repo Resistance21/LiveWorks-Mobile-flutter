@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liveworks_mobile_flutter/theme/app_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../widgets/tafe_logo.dart';
+import 'package:liveworks_mobile_flutter/widgets/tafe_logo.dart';
+import 'package:liveworks_mobile_flutter/widgets/theme_toggle_button.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   const AppHeader({super.key, required this.title, this.actions});
 
   final String title;
   final List<Widget>? actions;
-
-  // @override
-  // Size get preferredSize => const Size.fromHeight(104);
 
   @override
   Size get preferredSize {
@@ -24,6 +19,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Column(
@@ -39,17 +36,15 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   horizontal: 16,
                   vertical: 8,
                 ),
-                child: Row(
-                  children: [const TafeLogo(height: 32), const Spacer()],
-                ),
+                child: const Row(children: [TafeLogo(height: 32), Spacer()]),
               ),
             ),
           ),
           Container(
             height: 48,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(bottom: BorderSide(color: AppColors.border)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
             ),
             padding: const EdgeInsets.only(left: 16, right: 4),
             child: Row(
@@ -58,12 +53,12 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   child: Text(
                     title,
                     style: const TextStyle(
-                      color: AppColors.text,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                 ),
+                const ThemeToggleButton(),
                 ...?actions,
               ],
             ),

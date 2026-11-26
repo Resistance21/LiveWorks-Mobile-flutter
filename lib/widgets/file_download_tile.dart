@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liveworks_mobile_flutter/theme/app_theme.dart';
 
 class FileDownloadTile extends StatelessWidget {
   const FileDownloadTile({
@@ -23,7 +22,7 @@ class FileDownloadTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: ListTile(
         leading: Icon(icon),

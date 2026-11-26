@@ -87,18 +87,32 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       children: [
         Text(
           p.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: AppColors.text,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         const SizedBox(height: 4),
         Text('${p.unitCode} - ${p.unitName}'),
         const SizedBox(height: 4),
         Text(
           '${p.assessmentName} · ${p.year} · ${p.status}',
-          style: const TextStyle(color: AppColors.hint),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text('${p.unitCode} - ${p.unitName}'),
+        const SizedBox(height: 4),
+        Text(
+          p.name,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        const SizedBox(height: 4),
+        Text('${p.unitCode} - ${p.unitName}'),
+        const SizedBox(height: 4),
+        Text(
+          '${p.assessmentName} · ${p.year} · ${p.status}',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         if (description != null && description.isNotEmpty) ...[
           const SizedBox(height: 16),
