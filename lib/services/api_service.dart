@@ -14,6 +14,11 @@ class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
 
   String? token;
+  final http.Client _client = http.Client();
+
+  void dispose() {
+    _client.close();
+  }
 
   Map<String, String> get _authHeaders => {
     'Accept': 'application/json',
@@ -23,13 +28,10 @@ class ApiService {
   Future<String> login(String email, String password) async {
     final uri = Uri.parse('$baseUrl/login');
 
-    final response = await http
+    final response = await _client
         .post(
           uri,
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+          headers: _authHeaders,
           body: jsonEncode({'email': email, 'password': password}),
         )
         .timeout(const Duration(seconds: 10));
@@ -59,14 +61,8 @@ class ApiService {
     if (saved == null) return false;
 
     try {
-      final response = await http
-          .get(
-            Uri.parse('$baseUrl/user'),
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': 'Bearer $saved',
-            },
-          )
+      final response = await _client
+          .get(Uri.parse('$baseUrl/user'), headers: _authHeaders)
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -88,14 +84,8 @@ class ApiService {
   }
 
   Future<List<Project>> fetchProjects() async {
-    final response = await http
-        .get(
-          Uri.parse('$baseUrl/projects'),
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        )
+    final response = await _client
+        .get(Uri.parse('$baseUrl/projects'), headers: _authHeaders)
         .timeout(const Duration(seconds: 10));
 
     if (response.statusCode == 200) {
@@ -113,7 +103,7 @@ class ApiService {
   }
 
   Future<List<Unit>> fetchUnits() async {
-    final response = await http
+    final response = await _client
         .get(Uri.parse('$baseUrl/units'), headers: _authHeaders)
         .timeout(const Duration(seconds: 10));
 
@@ -125,7 +115,7 @@ class ApiService {
   }
 
   Future<List<Assessment>> fetchAssessments(int unitId) async {
-    final response = await http
+    final response = await _client
         .get(
           Uri.parse('$baseUrl/units/$unitId/assessments'),
           headers: _authHeaders,
@@ -173,7 +163,9 @@ class ApiService {
       );
     }
 
-    final streamed = await request.send().timeout(const Duration(seconds: 60));
+    final streamed = await _client
+        .send(request)
+        .timeout(const Duration(seconds: 60));
     final response = await http.Response.fromStream(streamed);
 
     if (response.statusCode == 201) return;
@@ -187,7 +179,7 @@ class ApiService {
   }
 
   Future<ProjectDetail> fetchProject(int id) async {
-    final response = await http
+    final response = await _client
         .get(Uri.parse('$baseUrl/projects/$id'), headers: _authHeaders)
         .timeout(const Duration(seconds: 10));
 
@@ -209,7 +201,7 @@ class ApiService {
       _download('documents/$documentId/download');
 
   Future<Uint8List> _download(String path) async {
-    final response = await http
+    final response = await _client
         .get(Uri.parse('$baseUrl/$path'), headers: _authHeaders)
         .timeout(const Duration(seconds: 60));
 
