@@ -105,7 +105,6 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 }
 
                 final projects = snapshot.data!;
-                debugPrint('projects received: ${projects.length}');
                 return RefreshIndicator(
                   onRefresh: _reload,
                   child: projects.isEmpty

@@ -5,22 +5,18 @@ import 'package:liveworks_mobile_flutter/theme/app_theme.dart';
 class ProjectCard extends StatelessWidget {
   const ProjectCard({super.key, required this.project, this.onTap});
 
-  static const int _descriptionLimit = 150;
-
   final Project project;
   final VoidCallback? onTap;
 
   String? get _shortDescription {
     final text = project.description?.trim();
     if (text == null || text.isEmpty) return null;
-    if (text.length <= _descriptionLimit) return text;
-    return '${text.substring(0, _descriptionLimit)}...';
+    return text;
   }
 
   @override
   Widget build(BuildContext context) {
     final d = project.createdAt.toLocal();
-    final version = project.latestArchiveVersion;
     final description = _shortDescription;
 
     return Card(
@@ -50,9 +46,15 @@ class ProjectCard extends StatelessWidget {
                     ),
                     if (description != null) ...[
                       const SizedBox(height: 4),
-                      Text(
-                        description,
-                        style: const TextStyle(color: AppColors.text),
+                      FractionallySizedBox(
+                        widthFactor: 0.75,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          description,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: AppColors.text),
+                        ),
                       ),
                     ],
                     const SizedBox(height: 4),
