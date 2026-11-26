@@ -6,6 +6,8 @@ import 'package:liveworks_mobile_flutter/services/api_service.dart';
 import 'package:liveworks_mobile_flutter/widgets/app_header.dart';
 import 'package:liveworks_mobile_flutter/widgets/project_card.dart';
 import 'package:flutter/foundation.dart';
+import 'package:liveworks_mobile_flutter/screens/project_detail_screen.dart';
+import 'package:liveworks_mobile_flutter/widgets/error_retry.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key, required this.api});
@@ -86,22 +88,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                     'Exception: ',
                     '',
                   );
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(message, textAlign: TextAlign.center),
-                          const SizedBox(height: 12),
-                          OutlinedButton(
-                            onPressed: _reload,
-                            child: const Text('Try again'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return ErrorRetry(message: message, onRetry: _reload);
                 }
 
                 final projects = snapshot.data!;
@@ -119,8 +106,20 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                           itemCount: projects.length,
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 12),
-                          itemBuilder: (context, index) =>
-                              ProjectCard(project: projects[index]),
+                          itemBuilder: (context, index) {
+                            final project = projects[index];
+                            return ProjectCard(
+                              project: project,
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ProjectDetailScreen(
+                                    api: widget.api,
+                                    projectId: project.id,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                 );
               },

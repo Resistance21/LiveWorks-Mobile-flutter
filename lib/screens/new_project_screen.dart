@@ -5,6 +5,7 @@ import 'package:liveworks_mobile_flutter/services/api_service.dart';
 import 'package:liveworks_mobile_flutter/widgets/app_header.dart';
 import 'package:liveworks_mobile_flutter/models/unit.dart';
 import 'package:liveworks_mobile_flutter/models/assessment.dart';
+import 'package:liveworks_mobile_flutter/widgets/loading_button.dart';
 
 class NewProjectScreen extends StatefulWidget {
   const NewProjectScreen({super.key, required this.api});
@@ -256,18 +257,10 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                       ),
                     ],
                     const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: _uploading ? null : _submit,
-                      child: _uploading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Upload project'),
+                    LoadingButton(
+                      label: 'Upload project',
+                      loading: _uploading,
+                      onPressed: _submit,
                     ),
                   ],
                 ),

@@ -4,6 +4,8 @@ import '../services/api_service.dart';
 import '../widgets/app_header.dart';
 import 'projects_screen.dart';
 
+import 'package:liveworks_mobile_flutter/widgets/loading_button.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.api});
 
@@ -115,18 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                     const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: _loading ? null : _submit,
-                      child: _loading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Sign in'),
+                    LoadingButton(
+                      label: 'Sign in',
+                      loading: _loading,
+                      onPressed: _submit,
                     ),
                   ],
                 ),
