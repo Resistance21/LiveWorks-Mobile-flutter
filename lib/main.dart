@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:liveworks_mobile_flutter/screens/auth_guard.dart';
 import 'package:liveworks_mobile_flutter/services/api_service.dart';
+import 'package:liveworks_mobile_flutter/theme/app_theme.dart';
 
 void main() => runApp(MyApp(api: ApiService()));
 
@@ -16,9 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LiveWorks',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: buildAppTheme(),
       home: AuthGate(api: api),
     );
   }
