@@ -5,6 +5,7 @@ import 'package:liveworks_mobile_flutter/screens/new_project_screen.dart';
 import 'package:liveworks_mobile_flutter/services/api_service.dart';
 import 'package:liveworks_mobile_flutter/widgets/app_header.dart';
 import 'package:liveworks_mobile_flutter/widgets/project_card.dart';
+import 'package:flutter/foundation.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key, required this.api});
@@ -25,8 +26,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   }
 
   Future<void> _reload() async {
+    debugPrint('reload started');
     final next = widget.api.fetchProjects();
-    setState(() => _projects = next);
+    setState(() {
+      _projects = next;
+    });
     await next.catchError((_) => <Project>[]);
   }
 
@@ -34,6 +38,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => NewProjectScreen(api: widget.api)),
     );
+    debugPrint('back from upload');
     if (!mounted) return;
     _reload();
   }
@@ -100,6 +105,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 }
 
                 final projects = snapshot.data!;
+                debugPrint('projects received: ${projects.length}');
                 return RefreshIndicator(
                   onRefresh: _reload,
                   child: projects.isEmpty
